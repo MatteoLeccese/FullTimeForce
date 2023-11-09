@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GithubModule } from './github/github.module';
 import configuration from './config/configuration';
+import { HttpModule } from '@nestjs/axios';
 
+@Global()
 @Module({
   imports: [
+    HttpModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.development', '.env'],
       load: [configuration],
@@ -12,5 +15,6 @@ import configuration from './config/configuration';
     }),
     GithubModule,
   ],
+  exports: [HttpModule],
 })
 export class AppModule {}
