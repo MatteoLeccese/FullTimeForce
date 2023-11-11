@@ -11,7 +11,7 @@ export interface CommitHistory {
 }
 
 export interface CommitHistoryProps {
-  commitHistory: CommitHistory
+  commitHistory: CommitHistory;
 }
 
 export interface Committer {

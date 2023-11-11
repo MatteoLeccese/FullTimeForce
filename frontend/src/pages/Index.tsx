@@ -1,37 +1,28 @@
-import { FunctionComponent, useEffect, useState } from "react";
-
-// Components
-import SearchBar from "../components/SearchBar";
-import CommitEntry from "../components/CommitEntry";
+import { FunctionComponent, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchGithubCommits } from "../store/commitHistorySlice";
+import { AppDispatch } from "../store/store";
 import { CommitHistory } from "../interfaces/github.interfaces";
+import { RootStoreState } from "../interfaces/store.interfaces";
+import CommitEntry from "../components/CommitEntry";
+// import SearchBar from "../components/SearchBar";
 
 const Index: FunctionComponent = () => {
-  const [user, setUser] = useState<string>('MatteoLeccese');
-  const [repo, setRepo] = useState<string>('FullTimeForce');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [commitsArray, setCommitsArray] = useState<CommitHistory[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, repo } = useSelector((state: RootStoreState) => state.repositorySearch);
+  const commitsArray: CommitHistory[] = useSelector((state: RootStoreState) => state.commitHistory.commitHistory);
 
   useEffect(() => {
-    try {
-      fetch(`http://localhost:3000/github?user=${user}&repository=${repo}`)
-        .then(response => response.json())
-        .then((data: CommitHistory[]) => {
-          console.log(data);
-          setCommitsArray(data);
-        })
-        .catch(() => setCommitsArray([]));
-    } catch (error) {
-      setCommitsArray([]);
-    }
     return () => {
-      setIsLoading(false);
-    }
-  }, [user, repo, setCommitsArray])
+      dispatch(fetchGithubCommits(user, repo));
+      console.log('log');
+    } 
+  }, [user, repo, dispatch])
   
   return (
     <div className="w-screen h-screen p-10 flex flex-col gap-2 items-center">
       <h1 className="text-3xl font-bold tracking-normal">FullTimeForce - GitHub Repository Search</h1>
-      {/* <SearchBar user={user} repo={repo}/> */}
+      {/* <SearchBar /> */}
       <>
         { 
           commitsArray && commitsArray.length ? (
