@@ -5,7 +5,7 @@ import { AppDispatch } from "../store/store";
 import { CommitHistory } from "../interfaces/github.interfaces";
 import { RootStoreState } from "../interfaces/store.interfaces";
 import CommitEntry from "../components/CommitEntry";
-// import SearchBar from "../components/SearchBar";
+import SearchBar from "../components/SearchBar";
 
 const Index: FunctionComponent = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,15 +14,16 @@ const Index: FunctionComponent = () => {
 
   useEffect(() => {
     return () => {
-      dispatch(fetchGithubCommits(user, repo));
-      console.log('log');
+      if (commitsArray.length === 0) {
+        dispatch(fetchGithubCommits(user, repo));
+      }
     } 
-  }, [user, repo, dispatch])
-  
+  }, [user, repo, dispatch, commitsArray])
+
   return (
     <div className="w-screen h-screen p-10 flex flex-col gap-2 items-center">
       <h1 className="text-3xl font-bold tracking-normal">FullTimeForce - GitHub Repository Search</h1>
-      {/* <SearchBar /> */}
+      <SearchBar />
       <>
         { 
           commitsArray && commitsArray.length ? (
